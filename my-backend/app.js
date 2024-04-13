@@ -4,6 +4,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const listingsRouter = require('./routes/listings');
 
 // MongoDB setup
 const mongoDB = 'mongodb+srv://mckenziruetz:jpGybvTMTfZrAkCd@cluster0.fwunarh.mongodb.net/';
@@ -26,5 +27,6 @@ app.use(cors());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/api/listings', listingsRouter);
 
 module.exports = app;
