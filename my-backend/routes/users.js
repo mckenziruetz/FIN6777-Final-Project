@@ -3,8 +3,25 @@ const bcrypt = require('bcryptjs'); // or bcrypt
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const router = express.Router();
+const checkRoleMiddleware = require('../middleware/checkRoleMiddleware');
+const authMiddleware = require('../middleware/authMiddleware');
 
-router.use(express.json());
+// Check if user is Admin
+router.get('/check-admin', authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.userData.userId); // assuming authMiddleware sets req.userData
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    if (user.role === 'admin') {
+      return res.json({ isAdmin: true });
+    } else {
+      return res.status(403).json({ isAdmin: false, message: "Not authorized" });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: "Server error" });
+  }
+});
 
 // User Sign Up Endpoint
 router.post('/signup', async (req, res) => {
@@ -25,10 +42,11 @@ router.post('/signin', async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (user && await bcrypt.compare(password, user.password)) {
-      const token = jwt.sign({ userId: user._id }, 'your_jwt_secret', { expiresIn: '1h' });
+      const token = jwt.sign({ userId: user._id, role: user.role }, 'your_jwt_secret', { expiresIn: '1h' });
       res.status(200).json({ 
         token,
-        firstName: user.firstName
+        firstName: user.firstName,
+        role: user.role,
       });
     } else {
       res.status(401).json({ message: 'Invalid credentials' });
