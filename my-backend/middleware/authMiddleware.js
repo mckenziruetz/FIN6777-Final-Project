@@ -21,5 +21,5 @@ const authMiddleware = (req, res, next) => {
     res.status(401).json({ message: "You are not authenticated!", error: error.message });
   }
 };
-
+// Could not get middleware functionality working properly, would be in phase 2
 module.exports = authMiddleware;

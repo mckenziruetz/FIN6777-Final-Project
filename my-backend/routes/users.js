@@ -9,7 +9,7 @@ const authMiddleware = require('../middleware/authMiddleware');
 // Check if user is Admin
 router.get('/check-admin', authMiddleware, async (req, res) => {
   try {
-    const user = await User.findById(req.userData.userId); // assuming authMiddleware sets req.userData
+    const user = await User.findById(req.userData.userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }

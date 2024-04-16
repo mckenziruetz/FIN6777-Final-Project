@@ -12,11 +12,9 @@ const checkRoleMiddleware = (roles) => async (req, res, next) => {
     if (roles.includes(user.role)) {
       next(); // User has the role, proceed to the next middleware
     } else {
-      // Log the unauthorized attempt here if needed
       res.status(403).json({ message: "You do not have permission to perform this action!" });
     }
   } catch (error) {
-    // Log the error here if needed
     res.status(401).json({ message: "You are not authenticated!" });
   }
 };
